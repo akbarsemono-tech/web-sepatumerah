@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEPATU MERAH - Premium File Sharing</title>
+    <style>
+        /* --- DESIGN SYSTEM & FONTS (ULTRA RAPI PRO) --- */
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --primary-red: #ff2a4b;
+            --primary-red-hover: #e01b3c;
+            --accent-pink: #ff66cc;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-color: #ff3333;
+            --success-color: #00ff66;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* --- LAYOUT UTAMA --- */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 42, 75, 0.15);
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .container.dashboard-mode {
+            max-width: 700px;
+        }
+
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- LOGO STYLE --- */
+        .logo-area img {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 30px;
+            filter: drop-shadow(0px 8px 25px rgba(255, 42, 75, 0.4));
+        }
+
+        /* --- FORM & INPUT STYLE --- */
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            background: #1f1f1f;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background: #252525;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.2);
+        }
+
+        /* --- BUTTON STYLE --- */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(255, 42, 75, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-red-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 42, 75, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-pink);
+            border: 2px solid var(--accent-pink);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 102, 204, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .switch-text {
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .switch-text span {
+            color: var(--accent-pink);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .msg {
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        .error-msg { color: var(--error-color); }
+
+        /* --- DASHBOARD & UPLOADER SYSTEM --- */
+        .welcome-header {
+            background: linear-gradient(45deg, var(--primary-red), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.4;
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+            border: 2px dashed rgba(255, 102, 204, 0.4);
+            padding: 40px 20px;
+            border-radius: 16px;
+            background: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .upload-box:hover {
+            border-color: var(--accent-pink);
+            background: #222;
+        }
+
+        .upload-box input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--accent-pink);
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: #222;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-red), var(--accent-pink));
+            transition: width 0.1s linear;
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 25px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .link-text {
+            font-size: 13px;
+            color: var(--accent-pink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .btn-copy {
+            padding: 8px 15px;
+            font-size: 12px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-copy:hover {
+            background: var(--primary-red-hover);
+        }
+
+        .logout-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--text-muted);
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .logout-link:hover { color: var(--primary-red); }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainCard">
+        
+        <div class="logo-area">
+            <img src="Tak berjudul25_20260622101157.png" alt="Sepatu Merah Logo">
+        </div>
+
+        <div id="pageWelcome" class="page active">
+            <h2>Selamat Datang</h2>
+            <p class="subtitle">Platform eksklusif pembagian berkas social media.</p>
+            <button class="btn btn-primary" onclick="navigateTo('pageLogin')">Login</button>
+            <button class="btn btn-outline" style="margin-top: 15px;" onclick="navigateTo('pageRegister')">Buat Akun</button>
+        </div>
+
+        <div id="pageRegister" class="page">
+            <h2>Buat Akun Baru</h2>
+            <p class="subtitle">Silakan isi data diri Anda dengan benar.</p>
+            
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="regName" placeholder="Masukkan nama Anda">
+            </div>
+            <div class="form-group">
+                <label>Alamat Gmail</label>
+                <input type="email" id="regEmail" placeholder="contoh@gmail.com">
+                <div class="msg error-msg" id="regEmailError">Harus menggunakan alamat @gmail.com yang valid!</div>
+            </div>
+            <div class="form-group">
+                <label>Password (Min. 6 Karakter)</label>
+                <input type="password" id="regPassword" placeholder="••••••••">
+                <div class="msg error-msg" id="regPassError">Password minimal harus 6 karakter!</div>
+            </div>
+
+            <button class="btn btn-primary" onclick="processRegister()">Selesai & Simpan</button>
+            <p class="switch-text">Sudah punya akun? <span onclick="navigateTo('pageLogin')">Login di sini</span></p>
+        </div>
+
+        <div id="pageLogin" class="page">
+            <h2>Masuk ke Akun</h2>
+            <p class="subtitle">Masukkan Gmail dan password terdaftar Anda.</p>
+            
+            <div class="form-group">
+                <label>Alamat Gmail</label>
+                <input type="email" id="loginEmail" placeholder="contoh@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••••">
+                <div class="msg error-msg" id="loginGlobalError">Gmail atau password salah!</div>
+            </div>
+
+            <button class="btn btn-primary" onclick="processLogin()">Login</button>
+            <p class="switch-text">Belum punya akun? <span onclick="navigateTo('pageRegister')">Buat Akun</span></p>
+        </div>
+
+        <div id="pageDashboard" class="page">
+            <div class="welcome-header">
+                HALO <span id="userGreeting" style="color: #fff; text-transform: uppercase;"></span>, SEMUANYA AKU ADALAH WEBSITE YANG BERGUNA UNTUK PEMBAGIAN SOCIAL MEDIA
+            </div>
+            
+            <div class="upload-box">
+                <div class="upload-icon">✦</div>
+                <p id="uploadStatusText" style="font-weight: 600;">Klik atau seret file ke sini untuk menambahkan file</p>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Mendukung semua format file</p>
+                <input type="file" id="fileInput" onchange="handleFileSelect(this)">
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 5px;" id="progressText">Mengekspor file beberapa menit...</p>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="result-box" id="resultBox">
+                <div class="link-text" id="generatedLink"></div>
+                <button class="btn-copy" id="btnCopy" onclick="copyLink()">Salin Link</button>
+            </div>
+
+            <span class="logout-link" onclick="processLogout()">Keluar dari Akun</span>
+        </div>
+
+    </div>
+
+    <script>
+        let databaseUser = JSON.parse(localStorage.getItem('sepatu_merah_users')) || [];
+        let sessionUser = null; 
+        let currentFileUrl = ''; 
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            const card = document.getElementById('mainCard');
+            if(pageId === 'pageDashboard') {
+                card.classList.add('dashboard-mode');
+            } else {
+                card.classList.remove('dashboard-mode');
+            }
+        }
+
+        function processRegister() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            let isValid = true;
+            document.getElementById('regEmailError').style.display = 'none';
+            document.getElementById('regPassError').style.display = 'none';
+
+            if(name === "") { alert("Nama tidak boleh kosong!"); return; }
+
+            const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            if (!gmailRegex.test(email)) {
+                document.getElementById('regEmailError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (password.length < 6) {
+                document.getElementById('regPassError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            const userExists = databaseUser.find(u => u.email === email);
+            if(userExists) {
+                alert("Gmail ini sudah terdaftar! Silakan login.");
+                return;
+            }
+
+            const newUser = { name: name, email: email, password: password };
+            databaseUser.push(newUser);
+            localStorage.setItem('sepatu_merah_users', JSON.stringify(databaseUser));
+
+            alert("Akun berhasil disimpan ke server lokal! Silakan Login.");
+            
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            
+            navigateTo('pageLogin');
+        }
+
+        function processLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorLabel = document.getElementById('loginGlobalError');
+
+            errorLabel.style.display = 'none';
+
+            const matchedUser = databaseUser.find(u => u.email === email && u.password === password);
+
+            if(matchedUser) {
+                sessionUser = matchedUser;
+                document.getElementById('userGreeting').innerText = sessionUser.name;
+                navigateTo('pageDashboard');
+                
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            } else {
+                errorLabel.style.display = 'block';
+            }
+        }
+
+        function processLogout() {
+            sessionUser = null;
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('uploadStatusText').innerText = "Klik atau seret file ke sini untuk menambahkan file";
+            navigateTo('pageWelcome');
+        }
+
+        function handleFileSelect(input) {
+            if(input.files.length === 0) return;
+
+            const file = input.files[0];
+            document.getElementById('uploadStatusText').innerText = `File terpilih: ${file.name}`;
+            document.getElementById('resultBox').style.display = 'none';
+            
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+
+            currentFileUrl = URL.createObjectURL(file);
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+                progressText.innerText = `Sedang mengekspor berkas media... (${progress}%)`;
+
+                if(progress >= 100) {
+                    clearInterval(interval);
+                    progressText.innerText = "Ekspor selesai!";
+                    
+                    const resultBox = document.getElementById('resultBox');
+                    const generatedLink = document.getElementById('generatedLink');
+                    
+                    resultBox.style.display = 'flex';
+                    
+                    // Link Otomatis Menggunakan Alamat GitHub Pages Kamu
+                    generatedLink.innerText = `https://akbarsemono-tech.github.io/web-sepatumerah/share/download-${Math.floor(Math.random() * 89999 + 10000)}`;
+                    document.getElementById('btnCopy').innerText = "Salin Link";
+                }
+            }, 150); 
+        }
+
+        function copyLink() {
+            const fakeLinkText = document.getElementById('generatedLink').innerText;
+            navigator.clipboard.writeText(fakeLinkText);
+            
+            document.getElementById('btnCopy').innerText = "Tersalin! ✔";
+
+            alert("Link berhasil disalin! Mengarahkan sistem untuk mendownload file otomatis...");
+
+            setTimeout(() => {
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.href = currentFileUrl;
+                downloadAnchor.download = "SEPATU_MERAH_" + document.getElementById('fileInput').files[0].name;
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                document.body.removeChild(downloadAnchor);
+            }, 800);
+        }
+    </script>
+</body>
+</html>
